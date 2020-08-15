@@ -69,7 +69,6 @@ class Board:
 
     def check_spot_free_x(self, piece, direction):
         pos = self.covert_coordinates_to_array_pos(piece.coords)
-        print(pos)
         if direction == "left":
             if all(self.board[int(i[0]) + 1][int(i[1]) - 1].is_white() for i in pos):
                 return True
