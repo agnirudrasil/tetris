@@ -25,10 +25,17 @@ choices = list(permutations(range(0, 7)))
 next_piece_surf = pygame.Surface((gap * 5 + 10, HEIGHT))
 CURRENT = None
 state = board.Board(gap, path, ROWS, COLS)
-
+HELD = None
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
 screen.fill((255, 255, 255))
+
+
+def held():
+    global CURRENT, HELD
+    CURRENT, HELD = HELD, CURRENT
+    if CURRENT is None:
+        switch_tetriminos()
 
 
 def gen_tetriminos():
@@ -67,6 +74,10 @@ def reset_display(sprite):
 
     for index, tetrimino in enumerate(TETRIMINOS):
         tetrimino.draw_preview(next_piece_surf, tetrimino.resource_location, (40, (index + 3.95) * 120))
+    if HELD is None:
+        pass
+    else:
+        HELD.draw_preview(next_piece_surf, HELD.resource_location, (40, 40))
     pygame.draw.rect(next_piece_surf, (0, 0, 0), (40, 3.95 * 120, 160, 8 * gap), 3)
     screen.blit(next_piece_surf, (gap * 10, 0))
     pygame.draw.line(screen, (0, 0, 0), (gap * 10, 0), (gap * 10, HEIGHT), 2)
@@ -80,8 +91,10 @@ switch_tetriminos()
 switch = False
 start = time.time()
 counter = 0
+held_count = 0
 
 while running:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -90,6 +103,10 @@ while running:
                 CURRENT.rotate(False)
             if event.key == pygame.K_z or event.key == pygame.K_LCTRL:
                 CURRENT.rotate()
+            if event.key == pygame.K_c:
+                if held_count == 0:
+                    held()
+                    held_count += 1
     CURRENT.handle_key_presses(state, CURRENT, pygame.key.get_pressed(), CURRENT.coords)
 
     reset_display(CURRENT)
@@ -100,6 +117,7 @@ while running:
         CURRENT.update(CURRENT.coords)
         if CURRENT.boundary_y(CURRENT.coords) or state.check_spot_free_y(CURRENT):
             CURRENT.kill()
+            held_count = 0
             counter += 1
             if counter >= 6:
                 gen_tetriminos()
