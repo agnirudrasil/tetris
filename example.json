@@ -1,0 +1,8 @@
+{
+  "gap": 40,
+  "speed": 1,
+  "bg_color": [255, 255, 255],
+  "line_color": [0, 0, 0],
+  "use_image_for_background": false,
+  "show_lines_if_using_image": false
+}
