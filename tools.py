@@ -2,6 +2,25 @@ import pygame
 import pyautogui
 
 
+class Reset:
+    def __init__(self):
+        self.surf = pygame.image.load("assets/icons/reset.png").convert_alpha()
+        self.rect = self.surf.get_rect(top=7*32)
+        self.select = False
+
+    def draw(self, surface):
+        surface.blit(self.surf, self.rect)
+
+    def selected(self, pos, canvas, *tools):
+        if self.rect.collidepoint(pos) and self.select is False:
+            self.select = False
+            for tool in tools:
+                tool.select = False
+                tool.unselect()
+            return [72, 40]
+        return canvas
+
+
 class Pencil:
     def __init__(self):
         self.surf = pygame.image.load("assets/icons/pencil_selected.png").convert_alpha()
@@ -68,7 +87,7 @@ class Eraser:
             self.surf = pygame.image.load("assets/icons/eraser.png").convert_alpha()
 
     def function(self, pos, canvas):
-        if self.select is True and pos[1] >= 0 and pos[0] >= 0:
+        if self.select is True:
             clicked_pos = int(round(pos[0] / (640 / 40) - 5, 0)), int(round(pos[1] / (640 / 40) - 3, 0))
             if clicked_pos[0] >= 0 and clicked_pos[1] >= 0:
                 try:
@@ -82,6 +101,9 @@ class Marquee:
     def __init__(self):
         self.surf = pygame.image.load("assets/icons/marquee.png").convert_alpha()
         self.rect = self.surf.get_rect(top=2 * 32)
+        self.initial = [0, 0]
+        self.rect_select = [0, 0, 0, 0]
+        self.diff = [0, 0]
         self.select = False
 
     def draw(self, surface):
@@ -103,11 +125,25 @@ class Marquee:
         if self.select is False:
             self.surf = pygame.image.load("assets/icons/marquee.png").convert_alpha()
 
+    def set_initial(self, pos):
+        self.initial = int(round(pos[0] / (640 / 40) - 5, 0)), int(round(pos[1] / (640 / 40) - 3, 0))
+        return [0, 0, 0, 0]
+
+    def function(self, pos):
+        if self.select is True and pos[0] >= 72 and pos[1] >= 40:
+            clicked_pos = int(round(pos[0] / (640 / 40) - 5, 0)), int(round(pos[1] / (640 / 40) - 3, 0))
+            self.diff = [abs(self.initial[0] - clicked_pos[0]) + 1, abs(self.initial[1] - clicked_pos[1]) + 1]
+            self.rect_select = [self.initial[0] * (640 // 40), self.initial[1] * (640 // 40),
+                                self.diff[0] * (640 // 40), self.diff[1] * (640 // 40)]
+        return self.rect_select
+
 
 class Hand:
     def __init__(self):
         self.surf = pygame.image.load("assets/icons/hand.png").convert_alpha()
         self.rect = self.surf.get_rect(top=3 * 32)
+        self.initial = [0, 0]
+        self.new_pos = [0, 0]
         self.select = False
 
     def draw(self, surface):
@@ -128,6 +164,18 @@ class Hand:
     def unselect(self):
         if self.select is False:
             self.surf = pygame.image.load("assets/icons/hand.png").convert_alpha()
+
+    def set_initial(self, pos):
+        if self.select is True:
+            if pos[0] > 72 and pos[1] > 40:
+                self.initial = int(round(pos[0] / (640 / 40) - 5, 0)), int(round(pos[1] / (640 / 40) - 3, 0))
+
+    def function(self, pos):
+        if self.select is True and pos[0] >= 72 and pos[1] >= 40:
+            clicked_pos = int(round(pos[0] / (640 / 40) - 5, 0)), int(round(pos[1] / (640 / 40) - 3, 0))
+            diff = [(self.initial[0] - clicked_pos[0]) * -1, (self.initial[1] - clicked_pos[1]) * -1]
+            self.new_pos = [diff[0] * (640 // 40), diff[1] * (640 // 40)]
+        return self.new_pos
 
 
 class Zoom:
