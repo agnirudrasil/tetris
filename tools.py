@@ -144,7 +144,7 @@ class Marquee:
             diff = canvas_pos[0] - 72, canvas_pos[1] - 40
             clicked_pos = int(round((pos[0] - diff[0]) / (640 / 40) - 5, 0)), \
                           int(round((pos[1] - diff[1]) / (640 / 40) - 3, 0))
-            self.diff = [(self.initial[0] - clicked_pos[0] + 1) * -1, (self.initial[1] - clicked_pos[1] + 1) * -1]
+            self.diff = [(self.initial[0] - clicked_pos[0]) * -1, (self.initial[1] - clicked_pos[1]) * -1]
             self.selection = [self.initial[0], self.initial[1],
                               self.initial[0] + self.diff[0], self.initial[1] + self.diff[1]]
             self.rect_select = [self.initial[0] * (640 // 40), self.initial[1] * (640 // 40),
@@ -156,17 +156,18 @@ class Marquee:
             for i in range(self.selection[0], self.selection[2]):
                 for j in range(self.selection[1], self.selection[3]):
                     canvas[i][j] = color
-            self._unselect()
+            self.unselect_()
             return canvas
         else:
             for i in range(self.selection[0], self.selection[2]):
                 for j in range(self.selection[1], self.selection[3]):
                     canvas[i][j] = [255, 255, 255]
-            self._unselect()
+            self.unselect_()
             return canvas
 
-    def _unselect(self):
+    def unselect_(self):
         self.rect_select = [0, 0, 0, 0]
+        self.selection = [0, 0, 0, 0]
 
 
 class Hand:
@@ -279,3 +280,29 @@ class Eyedropper:
         if self.select is True:
             color = pyautogui.pixel(pyautogui.position()[0], pyautogui.position()[1])
             return color
+
+
+class Recolor:
+    def __init__(self):
+        self.surf = pygame.image.load("assets/icons/recolor.png").convert_alpha()
+        self.rect = self.surf.get_rect(top=7 * 32)
+        self.select = False
+
+    def draw(self, surface):
+        surface.blit(self.surf, self.rect)
+
+    def selected(self, pos, *tools):
+        if self.rect.collidepoint(pos) and self.select is False:
+            for tool in tools:
+                tool.select = False
+                tool.unselect()
+            self.surf = pygame.image.load("assets/icons/recolor_selected.png").convert_alpha()
+
+            self.select = True
+        elif self.rect.collidepoint(pos) and self.select is True:
+            self.surf = pygame.image.load("assets/icons/recolor.png").convert_alpha()
+            self.select = False
+
+    def unselect(self):
+        if self.select is False:
+            self.surf = pygame.image.load("assets/icons/recolor.png").convert_alpha()
