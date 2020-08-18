@@ -7,21 +7,48 @@ pygame.init()
 
 screen = pygame.display.set_mode((480, 640))
 
-THEME_SELECTOR = pygame.image.load()
+THEME_SELECTOR = pygame.image.load('assets/menu/theme_selector.png')
+MAIN = pygame.image.load("assets/menu/main_menu.png")
+current_page = 0
 
-available_themes = os.listdir('assets/textures/')
-print(available_themes)
 pygame.display.set_caption('Play Tetris!')
-img = pygame.image.load("assets/menu/main_menu.png")
+img = MAIN
 date_font = pygame.font.Font('assets/fonts/koliko-Regular.ttf', 19)
 token = -1
 running = True
 solo = pygame.rect.Rect([108, 251, 263, 91])
 multiplayer = pygame.Rect([108, 376, 263, 90])
 theme_creator = pygame.Rect([108, 500, 263, 91])
+theme_select = pygame.Rect([105, 494, 275, 70])
 theme = pygame.Rect([287, 12, 49, 50])
 profile = pygame.Rect([10, 16, 175, 35])
+arrow_left = pygame.Rect([16, 193, 91, 127])
+arrow_right = pygame.Rect([365, 199, 91, 127])
+index = 0
 pygame.draw.rect(screen, (0, 0, 0), solo, 5)
+
+
+def display_themes_util():
+    available_themes = os.listdir('assets/textures/')
+    available_themes_ = [available_themes[i].split('_') for i in range(0, len(available_themes))]
+    themes = []
+    for _index, _theme in enumerate(available_themes_):
+        __theme__ = ""
+        for __theme in _theme:
+            __theme__ += __theme.capitalize() + " "
+        themes.append([__theme__.strip(), 'assets/textures/' + available_themes[_index] + '/pack.png'])
+    return themes
+
+
+def display_themes(_index):
+    themes = display_themes_util()
+    font_theme = pygame.font.Font('assets/fonts/koliko-Regular.ttf', 60)
+    try:
+        _theme = themes[_index]
+        screen.blit(font_theme.render(_theme[0], True, (255, 255, 255)), ((480 - font_theme.size(_theme[0])[0]) // 2, 395))
+        screen.blit(pygame.transform.scale(pygame.image.load(_theme[1]), (int(120 * 0.75), int(200 * 0.75))), (195, 189))
+    except IndexError:
+        pass
 
 
 def time_of_day():
@@ -37,11 +64,15 @@ def time_of_day():
 
 def reset_display():
     screen.blit(img, (0, 0))
-    screen.blit(date_font.render(f"{datetime.datetime.now().strftime('%d %b, %Y')}", True, (255, 255, 255)), (350, 23))
-    screen.blit(date_font.render(f"{datetime.datetime.now().strftime('%I:%M:%S %p')}", True, (255, 255, 255)),
-                (350, 50))
-    screen.blit(date_font.render(f'{time_of_day()}', True, (255, 255, 255)), (55, 17))
-    screen.blit(date_font.render(f'AGNIRUDRA SIL', True, (255, 255, 255)), (55, 37))
+    if current_page == 0:
+        screen.blit(date_font.render(f"{datetime.datetime.now().strftime('%d %b, %Y')}", True, (255, 255, 255)),
+                    (350, 23))
+        screen.blit(date_font.render(f"{datetime.datetime.now().strftime('%I:%M:%S %p')}", True, (255, 255, 255)),
+                    (350, 50))
+        screen.blit(date_font.render(f'{time_of_day()}', True, (255, 255, 255)), (55, 17))
+        screen.blit(date_font.render(f'AGNIRUDRA SIL', True, (255, 255, 255)), (55, 37))
+    if current_page == 1:
+        display_themes(index)
 
 
 while running:
@@ -50,19 +81,31 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                if solo.collidepoint(event.pos):
-                    token = 0
-                    running = False
-                if multiplayer.collidepoint(event.pos):
-                    token = 0
-                    running = False
-                if theme_creator.collidepoint(event.pos):
-                    token = 1
-                    running = False
-                if theme.collidepoint(event.pos):
-                    print('Change Theme')
-                if profile.collidepoint(event.pos):
-                    print('Profile Settings')
+                if current_page == 0:
+                    index = 0
+                    if solo.collidepoint(event.pos):
+                        token = 0
+                        running = False
+                    if multiplayer.collidepoint(event.pos):
+                        token = 0
+                        running = False
+                    if theme_creator.collidepoint(event.pos):
+                        token = 1
+                        running = False
+                    if theme.collidepoint(event.pos):
+                        current_page = 1
+                        img = THEME_SELECTOR
+                    if profile.collidepoint(event.pos):
+                        print('Profile Settings')
+                if current_page == 1:
+                    if theme_select.collidepoint(event.pos):
+                        current_page = 0
+                        img = MAIN
+                    if arrow_left.collidepoint(event.pos):
+                        index -= 1
+                    if arrow_right.collidepoint(event.pos):
+                        index += 1
+
     reset_display()
     pygame.display.flip()
 

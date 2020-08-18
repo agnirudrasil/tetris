@@ -1,4 +1,5 @@
 # Default ignored files
+__pycache__/
 assets/artworks/
 /shelf/
 /workspace.xml
