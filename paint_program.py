@@ -60,32 +60,35 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                pencil.selected(event.pos, eraser, hand, gradient, marquee, eyedropper, recolor)
+                recolor.selected(event.pos, pencil, eraser, hand, gradient, marquee, eyedropper)
+                eraser.selected(event.pos, pencil, hand, gradient, marquee, eyedropper, recolor)
+                marquee.selected(event.pos, eraser, pencil, hand, gradient, eyedropper, recolor)
+                if reset.select is not None:
+                    canvas_pos = reset.selected(event.pos, canvas_pos, pencil,
+                                                eraser, hand, gradient, marquee, eyedropper, recolor)
+
+                hand.selected(event.pos, eraser, pencil, gradient, eyedropper, marquee, recolor)
+                eyedropper.selected(event.pos, eraser, pencil, gradient, hand, marquee, recolor)
+                gradient.selected(event.pos, eraser, pencil, eyedropper, hand, marquee, recolor)
                 if marquee.select is True:
                     marquee.set_initial(event.pos, canvas_pos)
                 if hand.select is True:
                     hand.set_initial(event.pos)
         if pygame.mouse.get_pressed()[0]:
-            pencil.selected(event.pos, eraser, hand, gradient, marquee, eyedropper, recolor)
-            recolor.selected(event.pos, pencil, eraser, hand, gradient, marquee, eyedropper)
+
             canvas_holder = pencil.function(event.pos, canvas_holder, canvas_pos, color)
             if gradient.select is True:
                 canvas_holder = gradient.function()
             canvas_holder = eraser.function(event.pos, canvas_holder)
-            eraser.selected(event.pos, pencil, hand, gradient, marquee, eyedropper, recolor)
-            marquee.selected(event.pos, eraser, pencil, hand, gradient, eyedropper, recolor)
+
             if marquee.select is True:
                 rect = marquee.function(event.pos, canvas_pos)
             if hand.select is True:
                 canvas_pos = hand.function(event.pos)
-            if reset.select is not None:
-                canvas_pos = reset.selected(event.pos, canvas_pos, pencil,
-                                            eraser, hand, gradient, marquee, eyedropper, recolor)
                 canvas_size = [640, 640]
                 gap = canvas_size[0] // 40
                 canvas = pygame.Surface(canvas_size)
-            hand.selected(event.pos, eraser, pencil, gradient, eyedropper, marquee, recolor)
-            eyedropper.selected(event.pos, eraser, pencil, gradient, hand, marquee, recolor)
-            gradient.selected(event.pos, eraser, pencil, eyedropper, hand, marquee, recolor)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LCTRL:
                 if count == 0:
