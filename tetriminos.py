@@ -2,6 +2,7 @@ import pygame
 import numpy
 import math
 import board
+import time
 
 screen = pygame.display.set_mode((0, 0))
 
@@ -41,6 +42,7 @@ class Pieces(pygame.sprite.Sprite):
                 return True
 
     def draw_preview(self, surface, resource_location, pos):
+        self.score = 0
         surface.blit(pygame.image.load(resource_location).convert_alpha(), (pos[0], pos[1]))
 
     def kill_shape(self):
@@ -50,11 +52,18 @@ class Pieces(pygame.sprite.Sprite):
         if pressed_key[pygame.K_LEFT] and self.boundary_x(coords, "left") and state.check_spot_free_x(piece, "left"):
             for coord in coords:
                 coord[0] -= self.vel
+            time.sleep(0.03)
+            return 0
         if pressed_key[pygame.K_RIGHT] and self.boundary_x(coords, "right") and state.check_spot_free_x(piece, "right"):
             for coord in coords:
                 coord[0] += self.vel
+            time.sleep(0.03)
+            return 0
         if pressed_key[pygame.K_DOWN] and not self.boundary_y_key(coords) and not state.check_spot_free_y_key(piece):
             self.update(coords)
+            time.sleep(0.03)
+            return 1
+        return 0
 
     def __len__(self, other):
         return self.__len__()

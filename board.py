@@ -62,10 +62,12 @@ class Board:
                 return True
 
     def check_line(self):
-        flag = []
+        count = 0
         for i in range(self.row):
             if all(not self.board[i][j].is_white() for j in range(0, self.col)):
+                count += 1
                 self.move_down(i)
+        return count
 
     def check_spot_free_x(self, piece, direction):
         pos = self.covert_coordinates_to_array_pos(piece.coords)

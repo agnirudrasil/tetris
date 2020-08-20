@@ -1,13 +1,26 @@
+import time
 import pygame
 import datetime
 import os
+import pickle
+import users
+
 
 pygame.font.init()
 pygame.init()
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 480) // 2, (1080 - 640) // 2)
 
 screen = pygame.display.set_mode((480, 640))
 
+
+users.check_user_exist()
+
+with open('data/user.tetrisprofile', 'rb') as f:
+    user_profile = pickle.load(f)
+
+
 THEME_SELECTOR = pygame.image.load('assets/menu/theme_selector.png')
+PROFILE_CREATE = pygame.image.load('assets/menu/create_profile.png')
 MAIN = pygame.image.load("assets/menu/main_menu.png")
 current_page = 0
 
@@ -24,8 +37,17 @@ theme = pygame.Rect([287, 12, 49, 50])
 profile = pygame.Rect([10, 16, 175, 35])
 arrow_left = pygame.Rect([16, 193, 91, 127])
 arrow_right = pygame.Rect([365, 199, 91, 127])
+quit_btn = pygame.Rect([430, 590, 35, 35])
+back_profile = pygame.Rect([396, 140, 47, 47])
+create = pygame.Rect([165, 351, 162, 46])
 index = 0
+text = '_'
 pygame.draw.rect(screen, (0, 0, 0), solo, 5)
+
+
+def textbox(_text):
+    font = pygame.font.Font('assets/fonts/koliko-Regular.ttf', 25)
+    screen.blit(font.render(_text, True, (0, 0, 0)), (94, 290))
 
 
 def display_themes_util():
@@ -70,9 +92,11 @@ def reset_display():
         screen.blit(date_font.render(f"{datetime.datetime.now().strftime('%I:%M:%S %p')}", True, (255, 255, 255)),
                     (350, 50))
         screen.blit(date_font.render(f'{time_of_day()}', True, (255, 255, 255)), (55, 17))
-        screen.blit(date_font.render(f'AGNIRUDRA SIL', True, (255, 255, 255)), (55, 37))
+        screen.blit(date_font.render(f'{user_profile.username}', True, (255, 255, 255)), (55, 37))
     if current_page == 1:
         display_themes(index)
+    if current_page == 2:
+        textbox(text)
 
 
 while running:
@@ -83,11 +107,23 @@ while running:
             if event.button == 1:
                 if current_page == 0:
                     index = 0
+                    if quit_btn.collidepoint(event.pos):
+                        running = False
                     if solo.collidepoint(event.pos):
                         token = 0
+                        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 311) // 2, (1080 - 216) // 2)
+                        screen = pygame.display.set_mode((311, 216), pygame.NOFRAME)
+                        screen.blit(pygame.image.load('assets/menu/splash.png'), (0, 0))
+                        pygame.display.flip()
+                        time.sleep(2)
                         running = False
                     if multiplayer.collidepoint(event.pos):
                         token = 0
+                        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 311) // 2, (1080 - 216) // 2)
+                        screen = pygame.display.set_mode((311, 216), pygame.NOFRAME)
+                        screen.blit(pygame.image.load('assets/menu/splash.png'), (0, 0))
+                        pygame.display.flip()
+                        time.sleep(5)
                         running = False
                     if theme_creator.collidepoint(event.pos):
                         token = 1
@@ -96,17 +132,42 @@ while running:
                         current_page = 1
                         img = THEME_SELECTOR
                     if profile.collidepoint(event.pos):
-                        print('Profile Settings')
+                        img = PROFILE_CREATE
+                        current_page = 2
                 if current_page == 1:
                     if theme_select.collidepoint(event.pos):
                         current_page = 0
                         img = MAIN
                     if arrow_left.collidepoint(event.pos):
-                        index -= 1
+                        if index - 1 < 0:
+                            index = 0
+                        else:
+                            index -= 1
                     if arrow_right.collidepoint(event.pos):
-                        index += 1
+                        if index + 1 >= len(os.listdir('assets/textures/')):
+                            index = len(os.listdir('assets/textures/')) - 1
+                        else:
+                            index += 1
+                if current_page == 2:
+                    if back_profile.collidepoint(event.pos):
+                        current_page = 0
+                        img = MAIN
+                        text = '_'
+                    if create.collidepoint(event.pos):
+                        current_page = 0
+                        img = MAIN
+                        text = text[:-1]
+                        print(text)
+        if current_page == 2:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    text = text[:-2] + '_'
+                else:
+                    text = text[:-1]
+                    text += event.unicode + '_'
 
-    reset_display()
+    if running is True:
+        reset_display()
     pygame.display.flip()
 
 pygame.quit()
