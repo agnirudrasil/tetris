@@ -23,7 +23,7 @@ WIDTH, HEIGHT = (gap * 10) + (gap * 5 + 10), gap * 20
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - WIDTH) // 2, (1080 - HEIGHT) // 2)
 running = True
 clock = pygame.time.Clock()
-path = "assets/textures/pixel_art_style"
+path = "assets/textures/shiny_pieces"
 TETRIMINOS = []
 choices = list(permutations(range(0, 7)))
 next_piece_surf = pygame.Surface((gap * 5 + 10, HEIGHT))
@@ -71,30 +71,30 @@ def switch_tetriminos():
 
 
 def reset_display(sprite):
-    screen.fill(colors.WHITE)
+    screen.fill((36, 36, 36))
     sprite.draw(screen)
     state.draw_board(screen)
     for i in range(0, 20):
-        pygame.draw.line(screen, (0, 0, 0), (0, i * gap), (WIDTH - (gap * 4 + 10), i * gap))
-        pygame.draw.line(screen, (0, 0, 0), (i * gap, 0), (i * gap, HEIGHT))
-    next_piece_surf.fill(colors.WHITE)
-    next_piece_surf.blit(font.render('HELD', True, (0, 0, 0)), (((gap * 5 + 10) - font.size('HELD')[0]) // 2, 0))
+        pygame.draw.line(screen, (230, 230, 230), (0, i * gap), (WIDTH - (gap * 4 + 10), i * gap))
+        pygame.draw.line(screen, (230, 230, 230), (i * gap, 0), (i * gap, HEIGHT))
+    next_piece_surf.fill((36, 36, 36))
+    next_piece_surf.blit(font.render('HELD', True, (230, 230, 230)), (((gap * 5 + 10) - font.size('HELD')[0]) // 2, 0))
     for index, tetrimino in enumerate(TETRIMINOS):
         tetrimino.draw_preview(next_piece_surf, tetrimino.resource_location, (40, (index + 3.95) * 120))
     if HELD is None:
         pass
     else:
         HELD.draw_preview(next_piece_surf, HELD.resource_location, (40, 40))
-    pygame.draw.rect(next_piece_surf, (0, 0, 0), (40, 40, 160, 2 * gap), 3)
-    next_piece_surf.blit(font.render('Score', True, (0, 0, 0)), (((gap * 5 + 10) - font.size('Score')[0]) // 2, 4 * 40))
-    next_piece_surf.blit(font.render(str(score), True, (0, 0, 0)), (((gap * 5 + 10) - font.size(str(score))[0]) // 2, 5 * 40))
-    next_piece_surf.blit(font.render('Level', True, (0, 0, 0)), (((gap * 5 + 10) - font.size('Level')[0]) // 2, 6 * 40))
-    next_piece_surf.blit(font.render(str(level), True, (0, 0, 0)),
+    pygame.draw.rect(next_piece_surf, (230, 230, 230), (40, 40, 160, 2 * gap), 3)
+    next_piece_surf.blit(font.render('Score', True, (230, 230, 230)), (((gap * 5 + 10) - font.size('Score')[0]) // 2, 4 * 40))
+    next_piece_surf.blit(font.render(str(score), True, (230, 230, 230)), (((gap * 5 + 10) - font.size(str(score))[0]) // 2, 5 * 40))
+    next_piece_surf.blit(font.render('Level', True, (230, 230, 230)), (((gap * 5 + 10) - font.size('Level')[0]) // 2, 6 * 40))
+    next_piece_surf.blit(font.render(str(level), True, (230, 230, 230)),
                          (((gap * 5 + 10) - font.size(str(level))[0]) // 2, 7 * 40))
-    next_piece_surf.blit(font.render('Lines', True, (0, 0, 0)), (((gap * 5 + 10) - font.size('Lines')[0]) // 2, 8 * 40))
-    next_piece_surf.blit(font.render(str(line), True, (0, 0, 0)),
+    next_piece_surf.blit(font.render('Lines', True, (230, 230, 230)), (((gap * 5 + 10) - font.size('Lines')[0]) // 2, 8 * 40))
+    next_piece_surf.blit(font.render(str(line), True, (230, 230, 230)),
                          (((gap * 5 + 10) - font.size(str(line))[0]) // 2, 9 * 40))
-    next_piece_surf.blit(font.render('Next', True, (0, 0, 0)), (((gap * 5 + 10) - font.size('Next')[0]) // 2, 10.85 * 40))
+    next_piece_surf.blit(font.render('Next', True, (230, 230, 230)), (((gap * 5 + 10) - font.size('Next')[0]) // 2, 10.85 * 40))
     pygame.draw.rect(next_piece_surf, (0, 0, 0), (40, 3.95 * 120, 160, 8 * gap), 3)
     screen.blit(next_piece_surf, (gap * 10, 0))
     pygame.draw.line(screen, (0, 0, 0), (gap * 10, 0), (gap * 10, HEIGHT), 2)

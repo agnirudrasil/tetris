@@ -2,6 +2,7 @@ import time
 import pygame
 import datetime
 import os
+import random
 import pickle
 import users
 
@@ -10,7 +11,7 @@ pygame.font.init()
 pygame.init()
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 480) // 2, (1080 - 640) // 2)
 
-screen = pygame.display.set_mode((480, 640))
+screen = pygame.display.set_mode((480, 640), pygame.NOFRAME)
 
 
 users.check_user_exist()
@@ -115,7 +116,7 @@ while running:
                         screen = pygame.display.set_mode((311, 216), pygame.NOFRAME)
                         screen.blit(pygame.image.load('assets/menu/splash.png'), (0, 0))
                         pygame.display.flip()
-                        time.sleep(2)
+                        time.sleep(random.randint(1, 10))
                         running = False
                     if multiplayer.collidepoint(event.pos):
                         token = 0
