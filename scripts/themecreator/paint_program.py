@@ -1,6 +1,8 @@
 import pygame
-import tools
+from scripts.themecreator import tools
+import os
 
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 1280) // 2, (1080 - 720) // 2)
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Make You own Textures!")
 screen.fill((40, 40, 40))

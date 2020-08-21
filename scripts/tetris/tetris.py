@@ -1,29 +1,29 @@
 import pygame
-import tetriminos
-import colors
+import scripts.tetris.tetriminos as tetriminos
+from scripts import openfile
 import os
 from random import shuffle
 import time
-import board
+import scripts.tetris.board as board
 import math
 from itertools import permutations
 
 pygame.init()
 pygame.mixer.init()
 
-pygame.mixer.music.load("assets/music/Tetris.mp3")
+pygame.mixer.music.load(openfile("assets/music/Tetris.mp3"))
 pygame.mixer.music.set_volume(0.25)
 pygame.mixer.music.play(loops=-1)
 
 gap = 40
-font = pygame.font.Font('assets/fonts/Square.ttf', 40)
+font = pygame.font.Font(openfile('assets/fonts/Square.ttf'), 40)
 ROWS, COLS = 20, 10
 fall_time = 0
 WIDTH, HEIGHT = (gap * 10) + (gap * 5 + 10), gap * 20
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - WIDTH) // 2, (1080 - HEIGHT) // 2)
 running = True
 clock = pygame.time.Clock()
-path = "assets/textures/shiny_pieces"
+path = openfile("assets/textures/shiny_pieces")
 TETRIMINOS = []
 choices = list(permutations(range(0, 7)))
 next_piece_surf = pygame.Surface((gap * 5 + 10, HEIGHT))

@@ -1,11 +1,10 @@
 import time
 import pygame
 import datetime
-import os
 import random
+import os
 import pickle
-import users
-
+from scripts import users, openfile
 
 pygame.font.init()
 pygame.init()
@@ -13,21 +12,19 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 480) // 2, (1080 - 640) 
 
 screen = pygame.display.set_mode((480, 640), pygame.NOFRAME)
 
-
 users.check_user_exist()
 
-with open('data/user.tetrisprofile', 'rb') as f:
+with open(openfile('data/user.tetrisprofile'), 'rb') as f:
     user_profile = pickle.load(f)
 
-
-THEME_SELECTOR = pygame.image.load('assets/menu/theme_selector.png')
-PROFILE_CREATE = pygame.image.load('assets/menu/create_profile.png')
-MAIN = pygame.image.load("assets/menu/main_menu.png")
+THEME_SELECTOR = pygame.image.load(openfile('assets/menu/theme_selector.png'))
+PROFILE_CREATE = pygame.image.load(openfile('assets/menu/create_profile.png'))
+MAIN = pygame.image.load(openfile("assets/menu/main_menu.png"))
 current_page = 0
 
 pygame.display.set_caption('Play Tetris!')
 img = MAIN
-date_font = pygame.font.Font('assets/fonts/koliko-Regular.ttf', 19)
+date_font = pygame.font.Font(openfile('assets/fonts/koliko-Regular.ttf'), 19)
 token = -1
 running = True
 solo = pygame.rect.Rect([108, 251, 263, 91])
@@ -47,12 +44,12 @@ pygame.draw.rect(screen, (0, 0, 0), solo, 5)
 
 
 def textbox(_text):
-    font = pygame.font.Font('assets/fonts/koliko-Regular.ttf', 25)
+    font = pygame.font.Font(openfile('assets/fonts/koliko-Regular.ttf'), 25)
     screen.blit(font.render(_text, True, (0, 0, 0)), (94, 290))
 
 
 def display_themes_util():
-    available_themes = os.listdir('assets/textures/')
+    available_themes = os.listdir(openfile('assets/textures/'))
     available_themes_ = [available_themes[i].split('_') for i in range(0, len(available_themes))]
     themes = []
     for _index, _theme in enumerate(available_themes_):
@@ -65,11 +62,13 @@ def display_themes_util():
 
 def display_themes(_index):
     themes = display_themes_util()
-    font_theme = pygame.font.Font('assets/fonts/koliko-Regular.ttf', 60)
+    font_theme = pygame.font.Font(openfile('assets/fonts/koliko-Regular.ttf'), 60)
     try:
         _theme = themes[_index]
-        screen.blit(font_theme.render(_theme[0], True, (255, 255, 255)), ((480 - font_theme.size(_theme[0])[0]) // 2, 395))
-        screen.blit(pygame.transform.scale(pygame.image.load(_theme[1]), (int(120 * 0.75), int(200 * 0.75))), (195, 189))
+        screen.blit(font_theme.render(_theme[0], True, (255, 255, 255)),
+                    ((480 - font_theme.size(_theme[0])[0]) // 2, 395))
+        screen.blit(pygame.transform.scale(pygame.image.load(openfile(_theme[1])), (int(120 * 0.75), int(200 * 0.75))),
+                    (195, 189))
     except IndexError:
         pass
 
@@ -114,7 +113,7 @@ while running:
                         token = 0
                         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 311) // 2, (1080 - 216) // 2)
                         screen = pygame.display.set_mode((311, 216), pygame.NOFRAME)
-                        screen.blit(pygame.image.load('assets/menu/splash.png'), (0, 0))
+                        screen.blit(pygame.image.load(openfile('assets/menu/splash.png')), (0, 0))
                         pygame.display.flip()
                         time.sleep(random.randint(1, 10))
                         running = False
@@ -122,7 +121,7 @@ while running:
                         token = 0
                         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 311) // 2, (1080 - 216) // 2)
                         screen = pygame.display.set_mode((311, 216), pygame.NOFRAME)
-                        screen.blit(pygame.image.load('assets/menu/splash.png'), (0, 0))
+                        screen.blit(pygame.image.load(openfile('assets/menu/splash.png')), (0, 0))
                         pygame.display.flip()
                         time.sleep(5)
                         running = False
@@ -145,8 +144,8 @@ while running:
                         else:
                             index -= 1
                     if arrow_right.collidepoint(event.pos):
-                        if index + 1 >= len(os.listdir('assets/textures/')):
-                            index = len(os.listdir('assets/textures/')) - 1
+                        if index + 1 >= len(os.listdir(openfile('assets/textures/'))):
+                            index = len(os.listdir(openfile('assets/textures/'))) - 1
                         else:
                             index += 1
                 if current_page == 2:
@@ -174,6 +173,6 @@ while running:
 pygame.quit()
 
 if token == 0:
-    import tetris
+    from scripts.tetris import tetris
 if token == 1:
-    import paint_program
+    from scripts.themecreator import paint_program

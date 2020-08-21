@@ -2,14 +2,14 @@ import numpy
 import pygame
 import pyautogui
 from random import randint as rint
-
+from scripts import openfile
 from PIL import Image
 from PIL import ImageDraw
 
 
 class Reset:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/reset.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/reset.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=6 * 32)
         self.select = False
 
@@ -28,7 +28,7 @@ class Reset:
 
 class Pencil:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/pencil_selected.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/pencil_selected.png")).convert_alpha()
         self.rect = self.surf.get_rect()
         self.select = True
 
@@ -40,20 +40,20 @@ class Pencil:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/pencil_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/pencil_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/pencil.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/pencil.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/pencil.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/pencil.png")).convert_alpha()
 
     def select_(self):
         if self.select is True:
-            self.surf = pygame.image.load("assets/icons/pencil_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/pencil_selected.png")).convert_alpha()
 
     def function(self, pos, canvas, canvas_pos, color):
         if self.select is True:
@@ -70,7 +70,7 @@ class Pencil:
 
 class Eraser:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/eraser.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/eraser.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=32)
         self.select = False
 
@@ -82,16 +82,16 @@ class Eraser:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/eraser_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/eraser_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/eraser.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/eraser.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/eraser.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/eraser.png")).convert_alpha()
 
     def function(self, pos, canvas):
         if self.select is True:
@@ -106,7 +106,7 @@ class Eraser:
 
 class Marquee:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/marquee.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/marquee.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=2 * 32)
         self.initial = [0, 0]
         self.rect_select = [0, 0, 0, 0]
@@ -122,16 +122,16 @@ class Marquee:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/marquee_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/marquee_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/marquee.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/marquee.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/marquee.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/marquee.png")).convert_alpha()
 
     def set_initial(self, pos, canvas_pos):
         diff = canvas_pos[0] - 72, canvas_pos[1] - 40
@@ -172,7 +172,7 @@ class Marquee:
 
 class Hand:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/hand.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/hand.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=3 * 32)
         self.initial = [0, 0]
         self.new_pos = [0, 0]
@@ -186,16 +186,16 @@ class Hand:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/hand_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/hand_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/hand.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/hand.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/hand.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/hand.png")).convert_alpha()
 
     def set_initial(self, pos):
         if self.select is True:
@@ -213,7 +213,7 @@ class Hand:
 
 class Gradient:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/gradient.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/gradient.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=4 * 32)
         self.select = False
 
@@ -225,16 +225,16 @@ class Gradient:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/gradient_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/gradient_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/gradient.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/gradient.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/gradient.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/gradient.png")).convert_alpha()
 
     def function(self):
         img = Image.new("RGB", (40, 40), "#FFFFFF")
@@ -253,7 +253,7 @@ class Gradient:
 
 class Eyedropper:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/eyedropper.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/eyedropper.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=5 * 32)
         self.select = False
 
@@ -265,16 +265,16 @@ class Eyedropper:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/eyedropper_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/eyedropper_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/eyedropper.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/eyedropper.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/eyedropper.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/eyedropper.png")).convert_alpha()
 
     def function(self):
         if self.select is True:
@@ -284,7 +284,7 @@ class Eyedropper:
 
 class Recolor:
     def __init__(self):
-        self.surf = pygame.image.load("assets/icons/recolor.png").convert_alpha()
+        self.surf = pygame.image.load(openfile("assets/icons/recolor.png")).convert_alpha()
         self.rect = self.surf.get_rect(top=7 * 32)
         self.select = False
 
@@ -296,13 +296,13 @@ class Recolor:
             for tool in tools:
                 tool.select = False
                 tool.unselect()
-            self.surf = pygame.image.load("assets/icons/recolor_selected.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/recolor_selected.png")).convert_alpha()
 
             self.select = True
         elif self.rect.collidepoint(pos) and self.select is True:
-            self.surf = pygame.image.load("assets/icons/recolor.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/recolor.png")).convert_alpha()
             self.select = False
 
     def unselect(self):
         if self.select is False:
-            self.surf = pygame.image.load("assets/icons/recolor.png").convert_alpha()
+            self.surf = pygame.image.load(openfile("assets/icons/recolor.png")).convert_alpha()

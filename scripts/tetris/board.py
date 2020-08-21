@@ -1,5 +1,4 @@
 import pygame
-import tetriminos
 
 temp = pygame.display.set_mode((1, 1))
 

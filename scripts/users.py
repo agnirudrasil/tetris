@@ -1,4 +1,5 @@
 import pickle
+import scripts
 
 
 class UserProfile:
@@ -12,9 +13,8 @@ class UserProfile:
 
 def check_user_exist():
     try:
-        with open('data/user.tetrisprofile', 'rb') as f:
+        with open(scripts.openfile('data/user.tetrisprofile'), 'rb') as f:
             pass
     except FileNotFoundError:
-        with open('data/user.tetrisprofile', 'wb') as f:
+        with open(scripts.openfile('data/user.tetrisprofile'), 'wb') as f:
             pickle.dump(UserProfile(), f)
-
