@@ -3,8 +3,9 @@ import pygame
 import datetime
 import random
 import os
-import pickle
-from scripts import users, openfile
+import tkinter
+from tkinter.filedialog import askopenfile
+from scripts import users, openfile, show_stats
 
 pygame.font.init()
 pygame.init()
@@ -12,10 +13,7 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ((1920 - 480) // 2, (1080 - 640) 
 
 screen = pygame.display.set_mode((480, 640), pygame.NOFRAME)
 
-users.check_user_exist()
-
-with open(openfile('data/user.tetrisprofile'), 'rb') as f:
-    user_profile = pickle.load(f)
+user = users.load_user()
 
 THEME_SELECTOR = pygame.image.load(openfile('assets/menu/theme_selector.png'))
 PROFILE_CREATE = pygame.image.load(openfile('assets/menu/create_profile.png'))
@@ -39,6 +37,8 @@ quit_btn = pygame.Rect([430, 590, 35, 35])
 back_profile = pygame.Rect([396, 140, 47, 47])
 create = pygame.Rect([165, 351, 162, 46])
 index = 0
+path = None
+name = ''
 text = '_'
 pygame.draw.rect(screen, (0, 0, 0), solo, 5)
 
@@ -56,7 +56,7 @@ def display_themes_util():
         __theme__ = ""
         for __theme in _theme:
             __theme__ += __theme.capitalize() + " "
-        themes.append([__theme__.strip(), 'assets/textures/' + available_themes[_index] + '/pack.png'])
+        themes.append([__theme__.strip(), 'assets/textures/' + available_themes[_index] + '/pack.png', 'assets/textures/' + available_themes[_index]])
     return themes
 
 
@@ -92,7 +92,7 @@ def reset_display():
         screen.blit(date_font.render(f"{datetime.datetime.now().strftime('%I:%M:%S %p')}", True, (255, 255, 255)),
                     (350, 50))
         screen.blit(date_font.render(f'{time_of_day()}', True, (255, 255, 255)), (55, 17))
-        screen.blit(date_font.render(f'{user_profile.username}', True, (255, 255, 255)), (55, 37))
+        screen.blit(date_font.render(f'{user[0]["username"]}', True, (255, 255, 255)), (55, 37))
     if current_page == 1:
         display_themes(index)
     if current_page == 2:
@@ -132,11 +132,17 @@ while running:
                         current_page = 1
                         img = THEME_SELECTOR
                     if profile.collidepoint(event.pos):
-                        img = PROFILE_CREATE
-                        current_page = 2
+                        if user[0]["changed"] is not True:
+                            img = PROFILE_CREATE
+                            current_page = 2
+                        else:
+                            name = show_stats.gen_profile_data(user)
+                            img = pygame.image.load(openfile(name))
+                            current_page = 3
                 if current_page == 1:
                     if theme_select.collidepoint(event.pos):
                         current_page = 0
+                        user[0]['theme'] = os.listdir(openfile('assets/textures/'))[index]
                         img = MAIN
                     if arrow_left.collidepoint(event.pos):
                         if index - 1 < 0:
@@ -157,7 +163,29 @@ while running:
                         current_page = 0
                         img = MAIN
                         text = text[:-1]
-                        print(text)
+                        user[0]["username"] = text
+                        user[0]["changed"] = True
+                if current_page == 3:
+                    if pygame.Rect([375, 96, 47, 47]).collidepoint(event.pos):
+                        current_page = 0
+                        img = MAIN
+                        os.remove(openfile(name))
+                    if pygame.Rect([129, 430, 211, 62]).collidepoint(event.pos):
+                        current_page = 2
+                        os.remove(openfile(name))
+                        img = PROFILE_CREATE
+                    if pygame.Rect([189, 124, 111, 122]).collidepoint(event.pos):
+                        os.remove(openfile(name))
+                        root = tkinter.Tk()
+                        path = askopenfile().name
+                        root.update()
+                        root.destroy()
+                        current_page = 0
+                        img = MAIN
+                        if path is not None:
+                            user[0]['profile_pic'] = True
+                            user[0]['extention'] = os.path.splitext(path)[1]
+                            show_stats.gen_profile_photos(path)
         if current_page == 2:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
@@ -171,6 +199,10 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
+
+path = user[0]['theme']
+
+users.save_user(user)
 
 if token == 0:
     from scripts.tetris import tetris

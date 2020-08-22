@@ -1,20 +1,16 @@
-import pickle
-import scripts
+import json
+from scripts import openfile, encrypt
 
 
-class UserProfile:
-    def __init__(self, username='USER', profile_pic=None, theme=None):
-        self.username = username
-        self.profile_pic = profile_pic
-        self.theme = theme
-        self.highscore = 0
-        self.last_score = 0
+def load_user():
+    encrypt.decrypt()
+    with open((openfile('data/users.json')), 'r+') as f:
+        user = json.load(f)
+    encrypt.encrypt()
+    return user
 
 
-def check_user_exist():
-    try:
-        with open(scripts.openfile('data/user.tetrisprofile'), 'rb') as f:
-            pass
-    except FileNotFoundError:
-        with open(scripts.openfile('data/user.tetrisprofile'), 'wb') as f:
-            pickle.dump(UserProfile(), f)
+def save_user(user):
+    with open(openfile('data/users.json'), 'w') as f:
+        json.dump(user, f, indent=6)
+    encrypt.encrypt()
