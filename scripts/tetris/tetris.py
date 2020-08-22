@@ -2,7 +2,7 @@ import pygame
 import scripts.tetris.tetriminos as tetriminos
 from scripts import openfile
 import os
-from random import shuffle
+from random import choice
 import time
 import scripts.tetris.board as board
 import math
@@ -35,6 +35,7 @@ state = board.Board(gap, path, ROWS, COLS)
 HELD = None
 line = 0
 level = 0
+_choice = ()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
 screen.fill((255, 255, 255))
@@ -49,9 +50,9 @@ def held():
 
 
 def gen_tetriminos():
-    shuffle(choices)
-    choice = choices[0]
-    for i in choice:
+    global _choice
+    _choice = choice(choices)
+    for i in _choice:
         if i == 0:
             TETRIMINOS.append(tetriminos.Green(gap, path, 4, 0))
         if i == 1:
@@ -66,6 +67,7 @@ def gen_tetriminos():
             TETRIMINOS.append(tetriminos.Orange(gap, path, 4, 0))
         if i == 6:
             TETRIMINOS.append(tetriminos.Teal(gap, path, 4, 0))
+    _choice = ()
 
 
 def switch_tetriminos():
@@ -115,7 +117,6 @@ for i in range(0, 7):
 
 switch_tetriminos()
 start = time.time()
-counter = 0
 held_count = 0
 
 while running:
@@ -159,8 +160,7 @@ while running:
         if CURRENT.boundary_y(CURRENT.coords) or state.check_spot_free_y(CURRENT):
             CURRENT.kill()
             held_count = 0
-            counter += 1
-            if counter >= 6:
+            if len(TETRIMINOS) == 0:
                 gen_tetriminos()
             state.change_spot_color(CURRENT)
             switch_tetriminos()

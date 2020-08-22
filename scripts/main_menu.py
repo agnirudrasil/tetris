@@ -177,15 +177,18 @@ while running:
                     if pygame.Rect([189, 124, 111, 122]).collidepoint(event.pos):
                         os.remove(openfile(name))
                         root = tkinter.Tk()
-                        path = askopenfile().name
+                        path = askopenfile()
                         root.update()
                         root.destroy()
                         current_page = 0
-                        img = MAIN
                         if path is not None:
                             user[0]['profile_pic'] = True
-                            user[0]['extention'] = os.path.splitext(path)[1]
-                            show_stats.gen_profile_photos(path)
+                            user[0]['extention'] = os.path.splitext(path.name)[1]
+                            show_stats.gen_profile_photos(path.name)
+                        _name = show_stats.gen_profile_data(user)
+                        MAIN = pygame.image.load(openfile("assets/menu/main_menu.png"))
+                        os.remove(openfile(_name))
+                        img = MAIN
         if current_page == 2:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
