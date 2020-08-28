@@ -3,15 +3,15 @@ import socket
 import _thread
 from scripts.multiplayer.game import Game
 
-server = "192.168.29.235"
+server = "192.168.29.144"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind(server, port)
+    s.bind((server, port))
 except socket.error as e:
-    str(e)
+    print(e)
 
 s.listen()
 print("Waiting for connection")
@@ -62,9 +62,7 @@ while True:
     if id_count % 2 == 1:
         games[game_id] = Game()
     else:
-        """
-        ready = True
-        """
+        games[game_id].ready = True
         p = 1
 
     _thread.start_new_thread(threaded_client, (conn, p, game_id))
