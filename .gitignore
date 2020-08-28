@@ -1,2 +1,5 @@
 /artworks/
-/scripts/__pycache__/
+/scripts/multiplayer/__pycache__/
+/scripts/tetris/__pycache__/
+/scripts/themecreator/__pycache__/
+/scripts/temp/
