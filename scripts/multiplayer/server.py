@@ -1,7 +1,7 @@
 import pickle
 import socket
 import _thread
-from scripts.multiplayer.game import Game
+from scripts.multiplayer import game, board, tetriminos
 
 server = "192.168.29.144"
 port = 5555
@@ -18,36 +18,41 @@ print("Waiting for connection")
 
 connected = set()
 games = {}
-id_count = 0
+idCount = 0
 
 
-def threaded_client(_conn, player, _game_id):
-    global id_count
-    _conn.send(str.encode(str(player)))
+def threaded_client(conn, p, gameId):
+    global idCount
+    conn.send(str.encode(str(p)))
+
+    reply = ""
     while True:
         try:
-            data = pickle.loads(_conn.recv(4096))
-            if _game_id in games:
-                game = games[_game_id]
+            data = conn.recv(4096).decode()
+
+            if gameId in games:
+                game = games[gameId]
 
                 if not data:
                     break
                 else:
+                    game.update(p, data)
+
                     reply = game
-                    _conn.sendall(pickle.dumps(reply))
+                    conn.sendall(pickle.dumps(reply))
             else:
                 break
         except:
             break
 
-    print("Connection Lost")
+    print("Lost Connection!")
 
     try:
-        del games[_game_id]
-        print("Closing Game", _game_id)
+        del games[gameId]
+        print("Closing Game", gameId)
     except:
         pass
-    id_count -= 1
+    idCount -= 1
     conn.close()
 
 
@@ -55,12 +60,12 @@ while True:
     conn, addr = s.accept()
     print("Connected to: ", addr)
 
-    id_count += 1
+    idCount += 1
     p = 0
-    game_id = (id_count - 1) // 2
+    game_id = (idCount - 1) // 2
 
-    if id_count % 2 == 1:
-        games[game_id] = Game()
+    if idCount % 2 == 1:
+        games[game_id] = game.Game((0, 0, 0), None, board)
     else:
         games[game_id].ready = True
         p = 1

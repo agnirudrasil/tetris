@@ -152,8 +152,6 @@ while running:
     fall_time = (math.pow((0.8 - ((level - 1) * 0.007)), (level - 1))) if level <= 8 \
         else (math.pow((0.8 - ((9 - 1) * 0.007)), (9 - 1)))
 
-    print(fall_time)
-
     if time.time() - start >= fall_time:
         start = time.time()
         CURRENT.update(CURRENT.coords)

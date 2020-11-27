@@ -1,1 +1,1 @@
-from scripts import main_menu
+from scripts.multiplayer import server

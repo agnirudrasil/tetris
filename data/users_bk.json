@@ -5,6 +5,7 @@
     "high_score": 0,
     "last_score": 0,
     "theme": "pixel_art_style",
-    "profile_pic": null
+    "profile_pic": null,
+    "changed": false
   }
 ]

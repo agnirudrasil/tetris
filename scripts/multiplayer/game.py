@@ -19,3 +19,8 @@ class Game:
 
     def connected(self):
         return self.ready
+
+    def update(self, player, params):
+        self.update_board(player, params[0])
+        self.update_score(player, params[1])
+        self.update_current_piece(player, params[2])
