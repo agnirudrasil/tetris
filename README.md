@@ -10,7 +10,7 @@ This project is not complete yet.
 
 ## Instructions To Run
 
-* Make sure you have python installed(>3.6). If not you can download i from [here](https://www.python.org/downloads/).
+* Make sure you have python installed(>3.6). If not you can download python from [here](https://www.python.org/downloads/).
 * First install dependencies by running the following command in your terminal in the directory where you cloned the project
 ```commandline
 pip install -r requirements.txt
