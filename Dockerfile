@@ -6,11 +6,7 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY scripts/ .
-
-COPY data/ .
-
-COPY assets/ .
+COPY . .
 
 CMD ["python", "-m", "scripts"]
 
