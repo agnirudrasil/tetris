@@ -14,9 +14,9 @@ pygame.mixer.init()
 
 user = users.load_user()
 
-pygame.mixer.music.load(openfile("assets/music/Tetris.mp3"))
-pygame.mixer.music.set_volume(0.25)
-pygame.mixer.music.play(loops=-1)
+# pygame.mixer.music.load(openfile("assets/music/Tetris.mp3"))
+# pygame.mixer.music.set_volume(0.25)
+# pygame.mixer.music.play(loops=-1)
 
 path = openfile(f"assets/textures/{user[0]['theme']}")
 
